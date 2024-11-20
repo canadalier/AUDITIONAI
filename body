@@ -1,0 +1,50 @@
+import SwiftUI
+import AVFoundation
+
+struct ContentView: View {
+    @State private var scriptText: String = ""
+    @State private var selectedCharacter: String = ""
+    @State private var isPlaying: Bool = false
+
+    let characters = ["Zeynep", "Gülşen", "Bahtiyar", "Yılmaz"]
+
+    var body: some View {
+        VStack {
+            TextEditor(text: $scriptText)
+                .frame(height: 200)
+                .border(Color.gray, width: 1)
+                .padding()
+
+            Picker("Karakter Seçin", selection: $selectedCharacter) {
+                ForEach(characters, id: \.self) { character in
+                    Text(character)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+
+            Button(action: {
+                playScript()
+            }) {
+                Text("Seslendirmeyi Başlat")
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .disabled(scriptText.isEmpty || selectedCharacter.isEmpty)
+
+            Spacer()
+        }
+        .padding()
+    }
+
+    func playScript() {
+        isPlaying = true
+        let lines = scriptText.split(separator: "\n")
+        let synthesizer = AVSpeechSynthesizer()
+
+        for line in lines {
+            let parts = line.split(separator: ":")
+            guard parts
+
